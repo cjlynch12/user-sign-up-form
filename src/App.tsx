@@ -10,14 +10,7 @@ type FormStateKey = typeof formStateKeys[number];
 type FormState = Record<FormStateKey, { value: string, isValid: boolean | undefined }>
 
 // Initialize isValid as true to prevent showing form errors on app load
-const initalFormValues: Record<FormStateKey, { value: string, isValid: boolean | undefined }> = {
-  firstName: { value: '', isValid: undefined },
-  lastName: { value: '', isValid: undefined },
-  state: { value: '', isValid: undefined },
-  city: { value: '', isValid: undefined },
-  email: { value: '', isValid: undefined },
-  password: { value: '', isValid: undefined }
-}
+const initalFormValues: FormState = formStateKeys.reduce((obj, key) => ({...obj, [key]: {value: '', isValid: undefined}}), {} as FormState)
 
 type FormAction = {
   fieldName: string,
@@ -38,7 +31,7 @@ const formActions: Record<FormStateKey, FormDispatch> = {
   state: value => ({ fieldName: "state", payload: { value: value, isValid: true } }),
   city: value => ({ fieldName: 'city', payload: { value: value, isValid: true } }),
   email: value => ({ fieldName: 'email', payload: { value: value, isValid: validateEmail(value) } }),
-  password: value => ({ fieldName: 'password', payload: { value: value, isValid: !!value } })
+  password: value => ({ fieldName: 'password', payload: { value: value, isValid: !!value && value.length > 0 } })
 }
 
 const FormInputField: React.FC<{
